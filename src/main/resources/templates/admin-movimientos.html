@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movimientos - CapsulaBank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+    <style>
+        /* ============================================================
+           ESTADOS DE MOVIMIENTOS
+           ============================================================ */
+        .estado-pendiente {
+            background: #ffaa00 !important;
+            color: #000 !important;
+        }
+        .estado-autorizado {
+            background: #00ff88 !important;
+            color: #000 !important;
+        }
+        .estado-cancelado {
+            background: #ff1744 !important;
+            color: #fff !important;
+        }
+        .estado-completado {
+            background: #00bfff !important;
+            color: #000 !important;
+        }
+
+        /* ============================================================
+           BOTONES DE ACCIÓN
+           ============================================================ */
+        .btn-accion-gamer {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            margin: 2px;
+        }
+        .btn-confirmar {
+            background: #00ff88;
+            color: #000;
+        }
+        .btn-confirmar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        }
+        .btn-cancelar {
+            background: #ff1744;
+            color: #fff;
+        }
+        .btn-cancelar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 23, 68, 0.4);
+        }
+        .btn-transferencia-cancel {
+            background: #ff6d00;
+            color: #fff;
+        }
+        .btn-transferencia-cancel:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 109, 0, 0.4);
+        }
+        .btn-procesado {
+            background: #2a2a2a;
+            color: #666;
+            cursor: default;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        /* ============================================================
+           TABLA
+           ============================================================ */
+        .table-gamer th {
+            background: #1a1a1a;
+            color: #00ff88;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12px;
+        }
+        .table-gamer td {
+            vertical-align: middle;
+        }
+        .table-gamer tr:hover {
+            background: #1a1a1a;
+        }
+        .acciones-col {
+            min-width: 250px;
+        }
+        .badge-tipo {
+            font-weight: bold;
+            padding: 5px 12px;
+        }
+        .tipo-transferencia {
+            background: #ff6d00 !important;
+            color: #fff !important;
+        }
+
+        /* ============================================================
+           ALERTAS
+           ============================================================ */
+        .alert-gamer {
+            background: #1a1a1a;
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .alert-gamer-danger {
+            border-color: #ff1744;
+            color: #ff1744;
+        }
+
+        /* ============================================================
+           MODAL GAMER
+           ============================================================ */
+        .modal-gamer .modal-content {
+            background: #111;
+            color: #fff;
+            border: 2px solid #ff6d00;
+        }
+        .modal-gamer .modal-header {
+            border-bottom: 1px solid #ff6d00;
+        }
+        .modal-gamer .modal-footer {
+            border-top: 1px solid #ff6d00;
+        }
+        .modal-gamer .btn-close {
+            filter: invert(1);
+        }
+        .btn-cancel-transferencia {
+            background: #ff6d00;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-cancel-transferencia:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 109, 0, 0.4);
+        }
+        .form-control-gamer {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+        }
+        .form-control-gamer:focus {
+            border-color: #ff6d00;
+            box-shadow: 0 0 20px rgba(255, 109, 0, 0.2);
+        }
+        .badge-transferencia {
+            background: #ff6d00;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .icon-transferencia {
+            color: #ff6d00;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    NAVBAR
+    ============================================================ -->
+    <nav class="navbar navbar-expand-lg navbar-capsule sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/admin/dashboard">
+                <span class="capsule-logo">C</span>
+                CapsulaBank
+                <span class="capsule-badge" style="background: #ff1744;">ADMIN</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard"><i class="bi bi-house-fill"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/clientes"><i class="bi bi-people-fill"></i> Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/creditos"><i class="bi bi-credit-card"></i> Creditos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/cuentas"><i class="bi bi-bank"></i> Cuentas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/movimientos"><i class="bi bi-arrow-left-right"></i> Movimientos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/perfil"><i class="bi bi-person-circle"></i> Mi Perfil</a>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle" style="color: #ff1744;"></i> 
+                            <span>Administrador</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" style="background: #0a0a0a; border: 1px solid rgba(255, 23, 68, 0.3); border-radius: 12px;">
+                            <li>
+                                <form action="/logout" method="post">
+                                    <button type="submit" class="dropdown-item text-danger fw-bold">
+                                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesion
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+    CONTENIDO
+    ============================================================ -->
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-white">
+                <i class="bi bi-arrow-left-right text-info me-2"></i>
+                Movimientos Bancarios
+            </h1>
+            <span class="badge bg-info text-dark fs-6" th:text="${transferencias.size() + otrosMovimientos.size()} + ' movimientos'">0 movimientos</span>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="alert alert-gamer" role="alert">
+            <i class="bi bi-check-circle-fill"></i> <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-gamer alert-gamer-danger" role="alert">
+            <i class="bi bi-exclamation-circle-fill"></i> <span th:text="${error}"></span>
+        </div>
+
+        <!-- Tabla -->
+        <div class="card bg-dark border-0 shadow-lg">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover mb-0 table-gamer">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th><i class="bi bi-calendar3"></i> Fecha</th>
+                                <th><i class="bi bi-arrow-right"></i> Cuenta Origen</th>
+                                <th><i class="bi bi-arrow-left"></i> Cuenta Destino</th>
+                                <th><i class="bi bi-cash"></i> Monto</th>
+                                <th><i class="bi bi-tag"></i> Tipo</th>
+                                <th><i class="bi bi-shield-check"></i> Estado</th>
+                                <th class="acciones-col"><i class="bi bi-gear"></i> Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- ============================================================
+                            TRANSFERENCIAS UNIFICADAS
+                            ============================================================ -->
+                            <tr th:each="transferencia : ${transferencias}">
+                                <td th:text="${transferencia.id}">1</td>
+                                <td th:text="${#temporals.format(transferencia.fecha, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</td>
+                                <td><span class="badge bg-warning text-dark" th:text="${transferencia.cuentaOrigen}">CL012345678901</span></td>
+                                <td><span class="badge bg-info text-dark" th:text="${transferencia.cuentaDestino}">CL098765432112</span></td>
+                                
+                                <!-- Monto -->
+                                <td>
+                                    <span class="text-danger fw-bold" th:text="${'$' + #numbers.formatDecimal(transferencia.monto, 1, 'COMMA', 2, 'POINT')}">$0.00</span>
+                                </td>
+                                
+                                <!-- Tipo -->
+                                <td>
+                                    <span class="badge tipo-transferencia">
+                                        <i class="bi bi-arrow-left-right"></i> TRANSFERENCIA
+                                    </span>
+                                </td>
+                                
+                                <!-- Estado -->
+                                <td>
+                                    <span class="badge" 
+                                          th:class="${transferencia.estado == 'AUTORIZADO' || transferencia.estado == 'COMPLETADO' ? 'estado-autorizado' : 
+                                                     transferencia.estado == 'PENDIENTE' ? 'estado-pendiente' : 
+                                                     transferencia.estado == 'CANCELADO' ? 'estado-cancelado' : 
+                                                     'bg-secondary'}"
+                                          th:text="${transferencia.estado}">PENDIENTE</span>
+                                </td>
+                                
+                                <!-- Acciones -->
+                                <td>
+                                    <!-- TRANSFERENCIAS PENDIENTES: CONFIRMAR o CANCELAR -->
+                                    <div th:if="${transferencia.estado == 'PENDIENTE'}">
+                                        <!-- CONFIRMAR -->
+                                        <form th:action="@{/admin/movimientos/{id}/confirmar(id=${transferencia.idMovimientoEgreso})}" method="post" style="display: inline;">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                            <button type="submit" class="btn-accion-gamer btn-confirmar" 
+                                                    onclick="return confirm('¿Confirmar esta transferencia? Una vez confirmada no se podrá cancelar.')">
+                                                <i class="bi bi-check-circle"></i> CONFIRMAR
+                                            </button>
+                                        </form>
+                                        <!-- CANCELAR (abre modal) -->
+                                        <button class="btn-accion-gamer btn-transferencia-cancel" 
+                                                data-bs-toggle="modal" 
+                                                th:data-bs-target="'#cancelarModal' + ${transferencia.idMovimientoEgreso}">
+                                            <i class="bi bi-x-circle"></i> CANCELAR
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- YA PROCESADO (AUTORIZADO o CANCELADO) -->
+                                    <span th:if="${transferencia.estado == 'AUTORIZADO' or transferencia.estado == 'CANCELADO'}" 
+                                          class="btn-procesado">
+                                        <i class="bi bi-check2-all"></i> <span th:text="${transferencia.estado}">PROCESADO</span>
+                                    </span>
+                                    
+                                    <!-- MODAL para cancelar transferencia -->
+                                    <div th:attr="id='cancelarModal' + ${transferencia.idMovimientoEgreso}" class="modal fade modal-gamer" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">
+                                                        <i class="bi bi-exclamation-triangle-fill text-warning"></i> 
+                                                        Cancelar Transferencia
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="alert alert-warning">
+                                                        <i class="bi bi-info-circle-fill"></i>
+                                                        <strong>¿Estás seguro de cancelar esta transferencia?</strong><br>
+                                                        <small>El dinero será devuelto a la cuenta origen y se descontará de la cuenta destino.</small>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label text-muted">Detalles de la transferencia:</label>
+                                                        <div class="p-2 bg-dark rounded">
+                                                            <div><strong>Origen:</strong> <span th:text="${transferencia.cuentaOrigen}"></span></div>
+                                                            <div><strong>Destino:</strong> <span th:text="${transferencia.cuentaDestino}"></span></div>
+                                                            <div><strong>Monto:</strong> <span class="text-danger" th:text="${'$' + #numbers.formatDecimal(transferencia.monto, 1, 'COMMA', 2, 'POINT')}"></span></div>
+                                                        </div>
+                                                    </div>
+                                                    <form th:action="@{/admin/movimientos/{id}/cancelar-transferencia(id=${transferencia.idMovimientoEgreso})}" method="post">
+                                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Motivo de la cancelación:</label>
+                                                            <input type="text" name="motivo" class="form-control form-control-gamer" 
+                                                                   placeholder="Ej: Transferencia incorrecta" required>
+                                                        </div>
+                                                        <button type="submit" class="btn-cancel-transferencia w-100">
+                                                            <i class="bi bi-arrow-counterclockwise"></i> CONFIRMAR CANCELACIÓN
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- ============================================================
+                            OTROS MOVIMIENTOS (Depósitos, Retiros, Pagos, etc.)
+                            ============================================================ -->
+                            <tr th:each="mov : ${otrosMovimientos}">
+                                <td th:text="${mov.id}">1</td>
+                                <td th:text="${#temporals.format(mov.fecha, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</td>
+                                <td th:text="${mov.cuentaOrigen}">000000000000000000</td>
+                                <td th:text="${mov.cuentaDestino}">000000000000000000</td>
+                                
+                                <!-- Monto -->
+                                <td>
+                                    <span th:class="${mov.tipo == 'INGRESO' or mov.tipo == 'DEPOSITO' or mov.tipo == 'ABONO' ? 'text-success' : 'text-danger'}" 
+                                          th:text="${'$' + #numbers.formatDecimal(mov.monto, 1, 'COMMA', 2, 'POINT')}">$0.00</span>
+                                </td>
+                                
+                                <!-- Tipo -->
+                                <td>
+                                    <span class="badge badge-tipo" 
+                                          th:class="${mov.tipo == 'INGRESO' or mov.tipo == 'DEPOSITO' or mov.tipo == 'ABONO' ? 'bg-success' : 
+                                                     mov.tipo == 'EGRESO' or mov.tipo == 'RETIRO' or mov.tipo == 'CARGO' ? 'bg-danger' : 
+                                                     mov.tipo == 'PAGO' ? 'bg-warning text-dark' : 
+                                                     'bg-secondary'}"
+                                          th:text="${mov.tipo}">DEPOSITO</span>
+                                </td>
+                                
+                                <!-- Estado -->
+                                <td>
+                                    <span class="badge" 
+                                          th:class="${mov.estadoMovimiento == 'AUTORIZADO' || mov.estadoMovimiento == 'COMPLETADO' ? 'estado-autorizado' : 
+                                                     mov.estadoMovimiento == 'PENDIENTE' ? 'estado-pendiente' : 
+                                                     mov.estadoMovimiento == 'CANCELADO' ? 'estado-cancelado' : 
+                                                     'bg-secondary'}"
+                                          th:text="${mov.estadoMovimiento}">PENDIENTE</span>
+                                </td>
+                                
+                                <!-- Acciones -->
+                                <td>
+                                    <div th:if="${mov.estadoMovimiento == 'PENDIENTE'}">
+                                        <form th:action="@{/admin/movimientos/{id}/autorizar(id=${mov.id})}" method="post" style="display: inline;">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                            <button type="submit" class="btn-accion-gamer btn-confirmar" onclick="return confirm('¿Autorizar este movimiento?')">
+                                                <i class="bi bi-check-circle"></i> AUTORIZAR
+                                            </button>
+                                        </form>
+                                        <form th:action="@{/admin/movimientos/{id}/cancelar(id=${mov.id})}" method="post" style="display: inline;">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                            <button type="submit" class="btn-accion-gamer btn-cancelar" onclick="return confirm('¿Cancelar este movimiento?')">
+                                                <i class="bi bi-x-circle"></i> CANCELAR
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <span th:unless="${mov.estadoMovimiento == 'PENDIENTE'}" class="btn-procesado">
+                                        <i class="bi bi-check2-all"></i> <span th:text="${mov.estadoMovimiento}">PROCESADO</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <!-- Mensaje cuando no hay movimientos -->
+                            <tr th:if="${transferencias.isEmpty() and otrosMovimientos.isEmpty()}">
+                                <td colspan="8" class="text-center py-4 text-muted">
+                                    <i class="bi bi-inbox display-1 d-block mb-3"></i>
+                                    No hay movimientos registrados
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer class="footer-capsule mt-5">
+        <div class="container">
+            <div class="footer-bottom">
+                <span><i class="bi bi-c-circle"></i> 2026 CapsulaBank</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

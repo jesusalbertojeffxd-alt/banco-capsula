@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transferir - CapsulaBank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar-capsule {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+            padding: 12px 0;
+        }
+        .capsule-logo {
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-size: 1.8rem;
+        }
+        .capsule-badge {
+            background: #00ff88;
+            color: #000;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+        .navbar-capsule .nav-link {
+            color: rgba(255,255,255,0.6) !important;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+        .navbar-capsule .nav-link:hover,
+        .navbar-capsule .nav-link.active {
+            color: #00ff88 !important;
+            background: rgba(0, 255, 136, 0.08);
+        }
+        .navbar-capsule .nav-link i {
+            margin-right: 6px;
+        }
+
+        .transferencia-container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .transferencia-card {
+            background: #111;
+            border: 2px solid rgba(0, 255, 136, 0.15);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 0 60px rgba(0, 255, 136, 0.03);
+        }
+
+        .page-title {
+            color: #00ff88;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .page-title i {
+            font-size: 2rem;
+        }
+
+        .saldo-box {
+            background: rgba(0, 255, 136, 0.04);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 16px;
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .saldo-label {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .saldo-monto {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .saldo-monto i {
+            -webkit-text-fill-color: #00ff88;
+        }
+
+        .form-label-gamer {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .form-control-gamer {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: #fff;
+            padding: 14px 18px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            width: 100%;
+            outline: none;
+        }
+        .form-control-gamer:focus {
+            border-color: #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.08);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+        .form-control-gamer::placeholder {
+            color: rgba(255,255,255,0.15);
+        }
+        .form-control-gamer option {
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .input-group-icon {
+            position: relative;
+        }
+        .input-group-icon .form-control-gamer {
+            padding-left: 48px;
+        }
+        .input-group-icon i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.15);
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        .input-group-icon:focus-within i {
+            color: #00ff88;
+        }
+
+        .btn-neon {
+            background: transparent;
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            padding: 14px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            letter-spacing: 1px;
+        }
+        .btn-neon:hover {
+            background: #00ff88;
+            color: #0a0a0a;
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.2);
+            transform: scale(1.01);
+        }
+        .btn-neon:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .btn-neon i {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+        .btn-neon:hover i {
+            transform: translateX(4px);
+        }
+
+        .alert-gamer {
+            background: rgba(0, 255, 136, 0.06);
+            border: 1px solid rgba(0, 255, 136, 0.15);
+            color: #00ff88;
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .alert-gamer-danger {
+            border-color: rgba(255, 23, 68, 0.3);
+            color: #ff6b81;
+            background: rgba(255, 23, 68, 0.06);
+        }
+        .alert-gamer i {
+            font-size: 1.4rem;
+        }
+
+        .text-muted-gamer {
+            color: rgba(255,255,255,0.2);
+            font-size: 0.7rem;
+            margin-top: 4px;
+        }
+
+        .clabe-input {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 576px) {
+            .transferencia-card {
+                padding: 24px 18px;
+                border-radius: 18px;
+            }
+            .saldo-monto {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    NAVBAR
+    ============================================================ -->
+    <nav class="navbar navbar-expand-lg navbar-capsule sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/dashboard">
+                <span class="capsule-logo">C</span>
+                CapsulaBank
+                <span class="capsule-badge">CLIENTE</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard"><i class="bi bi-house-fill"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/transferencia"><i class="bi bi-arrow-left-right"></i> Transferir</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/mis-transferencias"><i class="bi bi-clock-history"></i> Mis Transferencias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/credito"><i class="bi bi-credit-card"></i> Créditos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/perfil"><i class="bi bi-person-circle"></i> Mi Perfil</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle" style="color: #00ff88;"></i> 
+                            <span th:text="${usuario != null ? usuario.nombre : 'Usuario'}">Usuario</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" style="background: #0a0a0a; border: 1px solid rgba(0,255,136,0.15); border-radius: 12px;">
+                            <li>
+                                <form action="/logout" method="post">
+                                    <button type="submit" class="dropdown-item text-danger fw-bold">
+                                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+    CONTENIDO
+    ============================================================ -->
+    <div class="transferencia-container">
+        <div class="transferencia-card">
+
+            <h1 class="page-title">
+                <i class="bi bi-arrow-left-right"></i> Transferir
+            </h1>
+
+            <!-- Alertas -->
+            <div th:if="${success}" class="alert alert-gamer" role="alert">
+                <i class="bi bi-check-circle-fill"></i> <span th:text="${success}">Transferencia realizada con éxito</span>
+            </div>
+            <div th:if="${error}" class="alert alert-gamer alert-gamer-danger" role="alert">
+                <i class="bi bi-exclamation-circle-fill"></i> <span th:text="${error}">Error en la transferencia</span>
+            </div>
+
+            <!-- Saldo -->
+            <div class="saldo-box">
+                <span class="saldo-label"><i class="bi bi-wallet2"></i> Saldo disponible</span>
+                <span class="saldo-monto">
+                    <i class="bi bi-currency-dollar"></i> 
+                    <span th:text="${#numbers.formatDecimal(saldoTotal, 1, 'COMMA', 2, 'POINT')}">8,420.50</span>
+                </span>
+            </div>
+
+            <!-- Formulario -->
+            <form th:action="@{/transferencia/realizar}" method="post" id="transferForm">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <input type="hidden" name="cuentaOrigen" th:value="${cuentaClabe}" />
+
+                <!-- CLABE Destino -->
+                <div class="mb-3">
+                    <label class="form-label-gamer" for="cuentaDestino">
+                        <i class="bi bi-upc-scan"></i> CLABE destino
+                        <span style="color: #ff3860;">*</span>
+                    </label>
+                    <div class="input-group-icon">
+                        <i class="bi bi-credit-card-2-back"></i>
+                        <input type="text" class="form-control-gamer clabe-input" id="cuentaDestino" name="cuentaDestino"
+                               placeholder="CL012345678901" maxlength="18" minlength="14" required />
+                    </div>
+                    <div class="text-muted-gamer">
+                        <i class="bi bi-info-circle"></i> Ingresa la CLABE de 14-18 dígitos de la cuenta destino
+                    </div>
+                </div>
+
+                <!-- Monto -->
+                <div class="mb-3">
+                    <label class="form-label-gamer" for="monto">
+                        <i class="bi bi-cash-stack"></i> Monto a transferir (MXN)
+                        <span style="color: #ff3860;">*</span>
+                    </label>
+                    <div class="input-group-icon">
+                        <i class="bi bi-currency-dollar"></i>
+                        <input type="number" class="form-control-gamer" id="monto" name="monto"
+                               placeholder="0.00" step="0.01" min="1" required />
+                    </div>
+                    <div class="text-muted-gamer">
+                        <i class="bi bi-info-circle"></i> mínimo $1.00 · disponible: $<span th:text="${#numbers.formatDecimal(saldoTotal, 1, 'COMMA', 2, 'POINT')}">8,420.50</span>
+                    </div>
+                </div>
+
+                <!-- Concepto -->
+                <div class="mb-3">
+                    <label class="form-label-gamer" for="descripcion">
+                        <i class="bi bi-pencil"></i> Concepto
+                        <span style="color: rgba(255,255,255,0.2); font-weight: 300;">(opcional)</span>
+                    </label>
+                    <input type="text" class="form-control-gamer" id="descripcion" name="descripcion"
+                           placeholder="Pago / referencia" />
+                </div>
+
+                <button type="submit" class="btn-neon" id="btnTransferir">
+                    <i class="bi bi-arrow-right-circle"></i> Realizar transferencia
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const montoInput = document.getElementById('monto');
+            const form = document.getElementById('transferForm');
+            const cuentaDestinoInput = document.getElementById('cuentaDestino');
+
+            montoInput.addEventListener('input', function() {
+                const saldoText = document.querySelector('.saldo-monto span').textContent.replace(/,/g, '');
+                const saldoDisponible = parseFloat(saldoText) || 0;
+                const monto = parseFloat(this.value);
+                
+                if (this.value && !isNaN(monto)) {
+                    if (monto > saldoDisponible) {
+                        this.style.borderColor = '#ff1744';
+                        this.style.boxShadow = '0 0 30px rgba(255,23,68,0.1)';
+                    } else if (monto > 0) {
+                        this.style.borderColor = '#00ff88';
+                        this.style.boxShadow = '0 0 30px rgba(0,255,136,0.05)';
+                    }
+                } else {
+                    this.style.borderColor = '';
+                    this.style.boxShadow = '';
+                }
+            });
+
+            cuentaDestinoInput.addEventListener('input', function() {
+                const valor = this.value.trim();
+                if (valor.length >= 14 && valor.length <= 18) {
+                    this.style.borderColor = '#00ff88';
+                } else if (valor.length > 0) {
+                    this.style.borderColor = '#ff1744';
+                } else {
+                    this.style.borderColor = '';
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
+                const clabe = cuentaDestinoInput.value.trim();
+                if (clabe.length < 14 || clabe.length > 18) {
+                    e.preventDefault();
+                    cuentaDestinoInput.style.borderColor = '#ff1744';
+                    alert('La CLABE debe tener entre 14 y 18 dígitos');
+                    cuentaDestinoInput.focus();
+                    return false;
+                }
+                
+                const monto = parseFloat(montoInput.value);
+                const saldoText = document.querySelector('.saldo-monto span').textContent.replace(/,/g, '');
+                const saldoDisponible = parseFloat(saldoText) || 0;
+                if (monto > saldoDisponible) {
+                    e.preventDefault();
+                    alert('Saldo insuficiente para realizar esta transferencia');
+                    montoInput.focus();
+                    return false;
+                }
+                return true;
+            });
+        });
+    </script>
+</body>
+</html>

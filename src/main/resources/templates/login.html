@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - CapsulaBank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- CSS - RUTA CORRECTA PARA STATIC -->
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Logo -->
+            <div class="login-logo">
+                <div class="capsule-logo-login">C</div>
+                <div class="login-title">
+                    CapsulaBank
+                    <span class="capsule-badge-login">FUTURE</span>
+                </div>
+                <div class="login-subtitle">
+                    <i class="bi bi-shield-check"></i> Tecnología financiera del futuro
+                </div>
+            </div>
+
+            <!-- Mensaje de error -->
+            <div th:if="${param.error}" class="alert-error show">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>Usuario o contraseña incorrectos</span>
+            </div>
+
+            <div th:if="${param.logout}" class="alert-error show" style="border-color: rgba(0, 255, 136, 0.2); color: #00ff88; background: rgba(0, 255, 136, 0.05);">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Has cerrado sesión correctamente</span>
+            </div>
+
+            <!-- Formulario -->
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="bi bi-person-fill"></i> Usuario
+                    </label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="form-control-login"
+                        placeholder="Ingresa tu usuario"
+                        required
+                        autofocus
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i class="bi bi-lock-fill"></i> Contraseña
+                    </label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-control-login"
+                        placeholder="Ingresa tu contraseña"
+                        required
+                    />
+                </div>
+
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember-me" />
+                    <label class="form-check-label" for="remember">Recordarme</label>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="login-links">
+                <a href="#">
+                    <i class="bi bi-question-circle"></i> ¿Olvidaste tu contraseña?
+                </a>
+                <a href="#">
+                    <i class="bi bi-person-plus"></i> Crear cuenta
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

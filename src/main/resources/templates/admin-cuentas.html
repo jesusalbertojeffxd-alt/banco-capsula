@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuentas - CapsulaBank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+</head>
+<body>
+
+    <!-- NAVBAR ADMIN -->
+    <nav class="navbar navbar-expand-lg navbar-capsule sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/admin/dashboard">
+                <span class="capsule-logo">C</span>
+                CapsulaBank
+                <span class="capsule-badge" style="background: #ff1744;">ADMIN</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard"><i class="bi bi-house-fill"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/clientes"><i class="bi bi-people-fill"></i> Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/creditos"><i class="bi bi-credit-card"></i> Créditos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/cuentas"><i class="bi bi-bank"></i> Cuentas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/movimientos"><i class="bi bi-arrow-left-right"></i> Movimientos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/perfil"><i class="bi bi-person-circle"></i> Mi Perfil</a>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle" style="color: #ff1744;"></i> 
+                            <span>Administrador</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" style="background: #0a0a0a; border: 1px solid rgba(255, 23, 68, 0.3); border-radius: 12px;">
+                            <li>
+                                <form action="/logout" method="post">
+                                    <button type="submit" class="dropdown-item text-danger fw-bold">
+                                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO -->
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-white">
+                <i class="bi bi-bank text-success me-2"></i>
+                Cuentas Bancarias
+            </h1>
+            <span class="badge bg-info text-dark fs-6" th:text="${cuentas.size()} + ' cuentas'">0 cuentas</span>
+        </div>
+
+        <div class="card bg-dark border-0 shadow-lg">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th><i class="bi bi-person"></i> Propietario</th>
+                                <th><i class="bi bi-credit-card"></i> CLABE</th>
+                                <th><i class="bi bi-cash"></i> Saldo</th>
+                                <th><i class="bi bi-shield-check"></i> Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="cuenta : ${cuentas}">
+                                <td th:text="${cuenta.id}">1</td>
+                                <td th:text="${cuenta.usuario.nombre}">Cliente</td>
+                                <td th:text="${cuenta.clabe}">000000000000000000</td>
+                                <td class="text-success fw-bold" th:text="${'$' + #numbers.formatDecimal(cuenta.saldo, 1, 'COMMA', 2, 'POINT')}">$0.00</td>
+                                <td>
+                                    <span class="badge bg-success" th:if="${cuenta.estado == 'ACTIVA'}">
+                                        <i class="bi bi-check-circle-fill me-1"></i> ACTIVA
+                                    </span>
+                                    <span class="badge bg-danger" th:if="${cuenta.estado == 'INACTIVA'}">
+                                        <i class="bi bi-x-circle-fill me-1"></i> INACTIVA
+                                    </span>
+                                    <span class="badge bg-warning text-dark" th:if="${cuenta.estado == 'BLOQUEADA'}">
+                                        <i class="bi bi-lock-fill me-1"></i> BLOQUEADA
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr th:if="${cuentas.isEmpty()}">
+                                <td colspan="5" class="text-center py-4 text-muted">
+                                    <i class="bi bi-inbox display-1 d-block mb-3"></i>
+                                    No hay cuentas registradas
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-capsule mt-5">
+        <div class="container">
+            <div class="footer-bottom">
+                <span><i class="bi bi-c-circle"></i> 2026 CapsulaBank</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

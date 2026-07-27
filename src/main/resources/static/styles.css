@@ -1,0 +1,563 @@
+/* ============================================
+   ESTILOS FUTURISTAS - CAPSULABANK
+   Verde neón (#00ff88) + Rojo acento (#ff1744)
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0a0a0a;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #fff;
+    min-height: 100vh;
+}
+
+/* ============================================
+   LOGIN
+   ============================================ */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0a;
+    padding: 20px;
+}
+
+.login-card {
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid #00ff88;
+    border-radius: 24px;
+    padding: 40px 35px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 0 60px rgba(0, 255, 136, 0.1);
+}
+
+.login-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.capsule-logo-login {
+    display: inline-block;
+    background: #00ff88;
+    color: #0a0a0a;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 70px;
+    font-weight: 900;
+    font-size: 28px;
+    box-shadow: 0 0 40px rgba(0, 255, 136, 0.3);
+}
+
+.login-title {
+    color: #00ff88;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-top: 12px;
+}
+
+.login-subtitle {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.login-subtitle i {
+    color: #00ff88;
+    margin-right: 6px;
+}
+
+.capsule-badge-login {
+    background: #ff1744;
+    color: #fff;
+    font-size: 0.5rem;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-left: 8px;
+}
+
+.alert-error {
+    background: rgba(255, 23, 68, 0.1);
+    border: 1px solid rgba(255, 23, 68, 0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: #ff1744;
+    font-size: 0.85rem;
+    margin-bottom: 18px;
+    display: none;
+}
+
+.alert-error.show {
+    display: block;
+}
+
+.alert-error i {
+    margin-right: 8px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-group label i {
+    color: #ff1744;
+    margin-right: 8px;
+}
+
+.form-control-login {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(0, 255, 136, 0.15);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: #fff;
+    font-size: 0.95rem;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.form-control-login:focus {
+    outline: none;
+    border-color: #00ff88;
+    box-shadow: 0 0 25px rgba(0, 255, 136, 0.08);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.form-control-login::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0 20px 0;
+}
+
+.form-check-input {
+    width: 18px;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-radius: 4px;
+    cursor: pointer;
+    accent-color: #00ff88;
+}
+
+.form-check-label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.btn-login {
+    background: #00ff88;
+    color: #0a0a0a;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.15);
+    cursor: pointer;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
+}
+
+.btn-login i {
+    margin-right: 10px;
+}
+
+.login-links {
+    text-align: center;
+    margin-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.login-links a {
+    color: rgba(255, 255, 255, 0.3);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.login-links a:hover {
+    color: #00ff88;
+}
+
+.login-links a i {
+    margin-right: 4px;
+}
+
+/* ============================================
+   NAVBAR
+   ============================================ */
+.navbar-capsule {
+    background: rgba(10, 10, 10, 0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 2px solid #00ff88;
+    box-shadow: 0 0 40px rgba(0, 255, 136, 0.15);
+    padding: 10px 0;
+}
+
+.navbar-capsule .navbar-brand {
+    color: #00ff88 !important;
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+.capsule-logo {
+    display: inline-block;
+    background: #00ff88;
+    color: #0a0a0a;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 36px;
+    font-weight: 900;
+    font-size: 16px;
+    margin-right: 10px;
+    box-shadow: 0 0 25px rgba(0, 255, 136, 0.5);
+}
+
+.capsule-badge {
+    background: #ff1744;
+    color: #fff;
+    font-size: 0.55rem;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-left: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.navbar-capsule .nav-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-weight: 500;
+    padding: 6px 18px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.navbar-capsule .nav-link:hover {
+    color: #00ff88 !important;
+    background: rgba(0, 255, 136, 0.08);
+}
+
+.navbar-capsule .nav-link i {
+    margin-right: 6px;
+}
+
+.btn-capsule {
+    background: #00ff88;
+    color: #0a0a0a !important;
+    border: none;
+    padding: 6px 22px;
+    border-radius: 25px;
+    font-weight: 700;
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.25);
+    transition: all 0.3s ease;
+}
+
+.btn-capsule:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 50px rgba(0, 255, 136, 0.45);
+}
+
+/* ============================================
+   TARJETAS DE ESTADÍSTICAS
+   ============================================ */
+.bg-gradient-clientes {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+.bg-gradient-creditos {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    box-shadow: 0 10px 40px rgba(245, 87, 108, 0.4);
+    border: 2px solid rgba(255,215,0,0.2);
+}
+
+.bg-gradient-cuentas {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    box-shadow: 0 10px 40px rgba(79, 172, 254, 0.4);
+    border: 2px solid rgba(0,255,136,0.2);
+}
+
+.bg-gradient-movimientos {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    box-shadow: 0 10px 40px rgba(67, 233, 123, 0.4);
+    border: 2px solid rgba(0,191,255,0.2);
+}
+
+/* Efecto hover para las tarjetas */
+.bg-gradient-clientes:hover,
+.bg-gradient-creditos:hover,
+.bg-gradient-cuentas:hover,
+.bg-gradient-movimientos:hover {
+    transform: translateY(-8px) scale(1.02);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+}
+
+/* Efecto de brillo en los números */
+.bg-gradient-clientes .display-1,
+.bg-gradient-creditos .display-1,
+.bg-gradient-cuentas .display-1,
+.bg-gradient-movimientos .display-1 {
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+    to {
+        text-shadow: 0 0 40px rgba(255,255,255,0.6), 0 0 60px rgba(255,255,255,0.3);
+    }
+}
+
+/* Animación para el número dentro del ícono */
+.number-inside-icon {
+    animation: pulse-number 2s ease-in-out infinite;
+}
+
+@keyframes pulse-number {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* ============================================
+   TABLA (NEGRO, VERDE NEÓN, ROJO)
+   ============================================ */
+.table-dark {
+    background: #1a1a1a !important;
+    border-color: #444 !important;
+}
+
+.table-dark thead th {
+    background: #2a2a2a !important;
+    color: #ff1744 !important;
+    border-bottom: 2px solid #ff1744 !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.table-dark tbody td {
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    font-weight: 500;
+}
+
+.table-dark tbody tr {
+    background: #1a1a1a !important;
+    transition: all 0.3s ease;
+}
+
+.table-dark tbody tr:hover {
+    background: #2a2a2a !important;
+}
+
+.text-success {
+    color: #00ff88 !important;
+}
+
+.text-danger {
+    color: #ff1744 !important;
+}
+
+.text-primary {
+    color: #00ff88 !important;
+}
+
+.bg-primary.bg-gradient {
+    background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%) !important;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 20px !important;
+    box-shadow: 0 0 40px rgba(0, 255, 136, 0.2);
+}
+
+.bg-white {
+    background: rgba(20, 20, 20, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 136, 0.1);
+}
+
+.shadow {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+.rounded {
+    border-radius: 16px !important;
+}
+
+/* ============================================
+   FORMULARIO
+   ============================================ */
+.form-control:focus {
+    border-color: #00ff88;
+    box-shadow: 0 0 0 0.25rem rgba(0, 255, 136, 0.25);
+    background-color: #1a1a1a;
+    color: white;
+}
+
+.form-control::placeholder {
+    color: #6c757d;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #00ff88, #00cc6a);
+    border: none;
+    font-weight: 600;
+    padding: 12px;
+    transition: all 0.3s ease;
+    color: #0a0a0a;
+}
+
+.btn-success:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+    color: #0a0a0a;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer-capsule {
+    background: #0a0a0a;
+    border-top: 2px solid #00ff88;
+    padding: 35px 0 15px 0;
+    margin-top: 30px;
+}
+
+.footer-capsule h5 {
+    color: #00ff88;
+    font-weight: 600;
+}
+
+.footer-capsule .footer-link {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.footer-capsule .footer-link:hover {
+    color: #00ff88;
+}
+
+.footer-capsule .footer-link i {
+    margin-right: 6px;
+    color: #ff1744;
+}
+
+.footer-capsule .social-link {
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    background: rgba(0, 255, 136, 0.06);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 34px;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    margin-right: 6px;
+    border: 1px solid rgba(0, 255, 136, 0.08);
+}
+
+.footer-capsule .social-link:hover {
+    background: #00ff88;
+    color: #0a0a0a;
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(0, 255, 136, 0.3);
+}
+
+.footer-capsule .footer-bottom {
+    border-top: 1px solid rgba(0, 255, 136, 0.06);
+    padding-top: 15px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.footer-capsule .footer-bottom .heart {
+    color: #ff1744;
+}
+
+.capsule-logo-footer {
+    display: inline-block;
+    background: #00ff88;
+    color: #0a0a0a;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 48px;
+    font-weight: 900;
+    font-size: 24px;
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .login-card {
+        padding: 30px 20px;
+    }
+    .login-title {
+        font-size: 1.4rem;
+    }
+    
+    .bg-gradient-clientes .display-1,
+    .bg-gradient-creditos .display-1,
+    .bg-gradient-cuentas .display-1,
+    .bg-gradient-movimientos .display-1 {
+        font-size: 3rem !important;
+    }
+    
+    .icon-with-number {
+        width: 60px !important;
+        height: 60px !important;
+    }
+    
+    .number-inside-icon {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.8rem !important;
+    }
+}

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+          title='Panel Administrador Ejecutivo',
+          content=~{::section}
+      )}">
+<head th:fragment="layout(title, content)">
+    <title>Panel Administrador - CapsulaBank</title>
+</head>
+<body>
+    <section>
+        <!-- ALERTAS -->
+        <div th:if="${param.success}" class="alert alert-success d-flex align-items-center gap-2 mb-4" role="alert">
+            <i class="bi bi-check-circle-fill fs-4"></i>
+            <div th:text="${param.success}">Operación exitosa</div>
+        </div>
+        <div th:if="${param.error}" class="alert alert-danger d-flex align-items-center gap-2 mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+            <div th:text="${param.error}">Error en la operación</div>
+        </div>
+
+        <!-- HEADER ADMIN -->
+        <div class="row mb-4">
+            <div class="col-12 col-md-8">
+                <h1 class="display-5 fw-bold text-white mb-2">
+                    <i class="bi bi-shield-lock-fill text-warning me-2"></i>
+                    Panel Administrador Ejecutivo
+                </h1>
+                <p class="text-white-50 mb-0">
+                    <i class="bi bi-database me-1"></i>
+                    Gestión de cartera de clientes, apertura de cuentas y administración de crédito.
+                </p>
+            </div>
+            <div class="col-12 col-md-4 text-md-end mt-3 mt-md-0">
+                <span class="badge bg-warning text-dark px-3 py-2 fw-bold text-uppercase rounded-pill fs-7 shadow-sm">
+                    <i class="bi bi-person-fill me-1"></i>
+                    Sesión iniciada como: 
+                    <span th:text="${#authentication.getName()}">Admin</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- TARJETAS DE ESTADÍSTICAS ADMIN -->
+        <div class="row g-4 mb-4">
+            <!-- Total Clientes -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="card bg-primary bg-gradient text-white h-100 shadow-lg border-0">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50 text-uppercase fw-bold mb-2">
+                                    <i class="bi bi-people-fill me-1"></i> Clientes Registrados
+                                </h6>
+                                <h2 class="display-4 fw-bold mb-0" th:text="${totalClientes}">0</h2>
+                            </div>
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="bi bi-people-fill fs-1"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <span class="badge bg-white text-primary">
+                                <i class="bi bi-arrow-up"></i> +12% este mes
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Cuentas -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="card bg-success bg-gradient text-white h-100 shadow-lg border-0">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50 text-uppercase fw-bold mb-2">
+                                    <i class="bi bi-bank me-1"></i> Cuentas Activas
+                                </h6>
+                                <h2 class="display-4 fw-bold mb-0" th:text="${totalCuentas}">0</h2>
+                            </div>
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="bi bi-bank fs-1"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <span class="badge bg-white text-success">
+                                <i class="bi bi-arrow-up"></i> +8% este mes
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Créditos -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="card bg-warning bg-gradient text-dark h-100 shadow-lg border-0">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-dark-50 text-uppercase fw-bold mb-2">
+                                    <i class="bi bi-credit-card me-1"></i> Créditos Activos
+                                </h6>
+                                <h2 class="display-4 fw-bold mb-0" th:text="${creditosActivos}">0</h2>
+                            </div>
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="bi bi-credit-card fs-1"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <span class="badge bg-white text-warning">
+                                <i class="bi bi-arrow-up"></i> +5% este mes
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Movimientos -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="card bg-info bg-gradient text-white h-100 shadow-lg border-0">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50 text-uppercase fw-bold mb-2">
+                                    <i class="bi bi-arrow-left-right me-1"></i> Movimientos Total
+                                </h6>
+                                <h2 class="display-4 fw-bold mb-0" th:text="${totalMovimientos}">0</h2>
+                            </div>
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="bi bi-arrow-left-right fs-1"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <span class="badge bg-white text-info">
+                                <i class="bi bi-arrow-up"></i> +15% este mes
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRÁFICAS ADMIN -->
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm border-0 p-4" style="background: #0a0a0a; border: 1px solid rgba(255, 23, 68, 0.15); height: 100%;">
+                    <h3 class="h5 fw-bold mb-4 text-center" style="color: #ff1744;">
+                        <i class="bi bi-pie-chart-fill me-2" style="color: #ff1744;"></i>
+                        Créditos por Estado
+                    </h3>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="graficaCreditos"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm border-0 p-4" style="background: #0a0a0a; border: 1px solid rgba(255, 23, 68, 0.15); height: 100%;">
+                    <h3 class="h5 fw-bold mb-4 text-center" style="color: #ff1744;">
+                        <i class="bi bi-bar-chart-fill me-2" style="color: #ff1744;"></i>
+                        Movimientos por Tipo
+                    </h3>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="graficaMovimientos"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLA DE ÚLTIMOS CLIENTES REGISTRADOS -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="card bg-dark border-0 shadow-lg">
+                    <div class="card-header bg-dark border-bottom border-secondary border-opacity-25">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="text-white mb-0">
+                                <i class="bi bi-person-plus-fill text-success me-2"></i>
+                                Últimos Clientes Registrados
+                            </h4>
+                            <a href="/admin/clientes" class="btn btn-outline-info btn-sm">
+                                Ver todos <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-warning"><i class="bi bi-person"></i> Usuario</th>
+                                        <th class="text-info"><i class="bi bi-envelope"></i> Email</th>
+                                        <th class="text-success"><i class="bi bi-calendar"></i> Fecha Registro</th>
+                                        <th class="text-primary"><i class="bi bi-bank"></i> Cuentas</th>
+                                        <th class="text-center text-secondary"><i class="bi bi-three-dots"></i> Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="cliente : ${ultimosClientes}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-primary bg-opacity-25 rounded-circle p-2 me-2">
+                                                    <i class="bi bi-person-circle text-primary"></i>
+                                                </div>
+                                                <span th:text="${cliente.username}">usuario</span>
+                                            </div>
+                                        </td>
+                                        <td th:text="${cliente.email}">correo@ejemplo.com</td>
+                                        <td th:text="${#temporals.format(cliente.fechaRegistro, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</td>
+                                        <td>
+                                            <span class="badge bg-info" th:text="${cliente.cuentas != null ? cliente.cuentas.size() : 0}">0</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-outline-primary btn-sm me-1" title="Ver detalles">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-warning btn-sm" title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${ultimosClientes == null or ultimosClientes.isEmpty()}">
+                                        <td colspan="5" class="text-center py-4 text-muted">
+                                            <i class="bi bi-inbox display-1 d-block mb-3"></i>
+                                            No hay clientes registrados
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESÚMEN FINANCIERO -->
+        <div class="row mt-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-dark border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted text-uppercase small">Saldo Total</h6>
+                        <h3 class="text-success fw-bold">
+                            $<span th:text="${#numbers.formatDecimal(saldoTotal, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-dark border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted text-uppercase small">Créditos Activos</h6>
+                        <h3 class="text-warning fw-bold" th:text="${creditosActivos}">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-dark border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted text-uppercase small">Créditos Totales</h6>
+                        <h3 class="text-info fw-bold" th:text="${totalCreditos}">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-dark border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted text-uppercase small">Cartera Total</h6>
+                        <h3 class="text-primary fw-bold">
+                            $<span th:text="${#numbers.formatDecimal(carteraTotal, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts de Chart.js -->
+        <script th:inline="javascript">
+            document.addEventListener("DOMContentLoaded", function () {
+                // Gráfica de Créditos por Estado
+                const canvasCreditos = document.getElementById("graficaCreditos");
+                if (canvasCreditos) {
+                    const etiquetasCreditos = /*[[${etiquetasCreditos}]]*/ ['Aprobados', 'Pendientes', 'Rechazados'];
+                    const valoresCreditos = /*[[${valoresCreditos}]]*/ [10, 5, 2];
+                    const coloresCreditos = /*[[${coloresCreditos}]]*/ ['#00ff88', '#ffc107', '#ff1744'];
+
+                    if (etiquetasCreditos && etiquetasCreditos.length > 0) {
+                        new Chart(canvasCreditos.getContext('2d'), {
+                            type: 'doughnut',
+                            data: {
+                                labels: etiquetasCreditos,
+                                datasets: [{
+                                    data: valoresCreditos,
+                                    backgroundColor: coloresCreditos.map(c => c + 'CC'),
+                                    borderColor: coloresCreditos,
+                                    borderWidth: 3,
+                                    hoverOffset: 10
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            color: '#ffffff',
+                                            font: { size: 12, weight: 'bold' },
+                                            padding: 15,
+                                            boxWidth: 15,
+                                            boxHeight: 15,
+                                            usePointStyle: true,
+                                            pointStyle: 'circle'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+
+                // Gráfica de Movimientos por Tipo
+                const canvasMovimientos = document.getElementById("graficaMovimientos");
+                if (canvasMovimientos) {
+                    const etiquetasMov = /*[[${etiquetasMovimientos}]]*/ ['Transferencias', 'Depósitos', 'Retiros', 'Pagos'];
+                    const valoresMov = /*[[${valoresMovimientos}]]*/ [20, 15, 8, 5];
+                    const coloresMov = /*[[${coloresMovimientos}]]*/ ['#00bfff', '#00ff88', '#ff1744', '#ffc107'];
+
+                    if (etiquetasMov && etiquetasMov.length > 0) {
+                        new Chart(canvasMovimientos.getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: etiquetasMov,
+                                datasets: [{
+                                    label: 'Movimientos',
+                                    data: valoresMov,
+                                    backgroundColor: coloresMov.map(c => c + 'CC'),
+                                    borderColor: coloresMov,
+                                    borderWidth: 2,
+                                    borderRadius: 8
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            color: '#ffffff'
+                                        },
+                                        grid: {
+                                            color: 'rgba(255,255,255,0.05)'
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            color: '#ffffff'
+                                        },
+                                        grid: {
+                                            display: false
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        </script>
+        <!-- Script de Captura de Firma Canvas -->
+    <script>
+        const canvas = document.getElementById('firmaPad');
+        const ctxFirma = canvas.getContext('2d');
+        let isDrawing = false;
+        let trazadoRealizado = false;
+
+        // Configuración de resolución real del canvas
+        function ajustarResolucionCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = 200; // Altura fija
+            
+            // Re-configurar pincel tras ajustar resolución
+            ctxFirma.lineWidth = 3;
+            ctxFirma.lineCap = 'round';
+            ctxFirma.lineJoin = 'round';
+            ctxFirma.strokeStyle = '#00ffcc'; // Color verde neón bancario
+        }
+
+        window.addEventListener('resize', ajustarResolucionCanvas);
+        ajustarResolucionCanvas();
+
+        // --- Eventos de Mouse (Desktop) ---
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            ctxFirma.beginPath();
+            const pos = obtenerCoordenadas(e);
+            ctxFirma.moveTo(pos.x, pos.y);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing) return;
+            const pos = obtenerCoordenadas(e);
+            ctxFirma.lineTo(pos.x, pos.y);
+            ctxFirma.stroke();
+            trazadoRealizado = true;
+        });
+
+        canvas.addEventListener('mouseup', () => { isDrawing = false; });
+        canvas.addEventListener('mouseout', () => { isDrawing = false; });
+
+        // --- Eventos de Toque (Mobile/Tablet) ---
+        canvas.addEventListener('touchstart', (e) => {
+            isDrawing = true;
+            ctxFirma.beginPath();
+            const pos = obtenerCoordenadas(e.touches[0]);
+            ctxFirma.moveTo(pos.x, pos.y);
+            e.preventDefault(); // Previene desplazamiento de pantalla al firmar
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (!isDrawing) return;
+            const pos = obtenerCoordenadas(e.touches[0]);
+            ctxFirma.lineTo(pos.x, pos.y);
+            ctxFirma.stroke();
+            trazadoRealizado = true;
+            e.preventDefault();
+        });
+
+        canvas.addEventListener('touchend', () => { isDrawing = false; });
+
+        // Helper para mapear coordenadas correctas del lienzo
+        function obtenerCoordenadas(event) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            };
+        }
+
+        // Limpia el lienzo
+        function limpiarFirma() {
+            ctxFirma.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('firmaBase64').value = "";
+            trazadoRealizado = false;
+        }
+
+        // Simula la validación de trazo
+        function confirmarFirmaCapturada() {
+            if (!trazadoRealizado) {
+                alert("Dibuja tu firma en el lienzo primero.");
+                return;
+            }
+            const base64 = canvas.toDataURL("image/png");
+            document.getElementById('firmaBase64').value = base64;
+            alert("Firma digital validada e inyectada con éxito.");
+        }
+
+        // Prepara el envío de formulario
+        function prepararEnvioForm() {
+            if (!trazadoRealizado) {
+                alert("Debes estampar tu firma de conformidad electrónica.");
+                return false;
+            }
+            // Extraer base64 e inyectar al hidden field
+            const base64 = canvas.toDataURL("image/png");
+            document.getElementById('firmaBase64').value = base64;
+            return true;
+        }
+    </script>
+    </section>
+</body>
+</html>

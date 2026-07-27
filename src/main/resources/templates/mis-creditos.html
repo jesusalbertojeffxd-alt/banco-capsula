@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Créditos - CapsulaBank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar-capsule {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+            padding: 12px 0;
+        }
+        .capsule-logo {
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-size: 1.8rem;
+        }
+        .capsule-badge {
+            background: #00ff88;
+            color: #000;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+        .navbar-capsule .nav-link {
+            color: rgba(255,255,255,0.6) !important;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+        .navbar-capsule .nav-link:hover,
+        .navbar-capsule .nav-link.active {
+            color: #00ff88 !important;
+            background: rgba(0, 255, 136, 0.08);
+        }
+        .navbar-capsule .nav-link i {
+            margin-right: 6px;
+        }
+
+        .container-custom {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            color: #00ff88;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
+        }
+        .page-title i {
+            font-size: 1.8rem;
+        }
+
+        .card-gamer {
+            background: #111;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.02);
+        }
+
+        .table-gamer {
+            color: #fff !important;
+            margin-bottom: 0;
+            background: #0a0a0a !important;
+        }
+        .table-gamer thead th {
+            background: #111 !important;
+            color: #00ff88 !important;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            padding: 14px 16px;
+            border-bottom: 2px solid rgba(0, 255, 136, 0.15);
+            border-top: none;
+        }
+        .table-gamer tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            vertical-align: middle;
+            color: #fff !important;
+            background: #0a0a0a !important;
+        }
+        .table-gamer tbody tr:hover td {
+            background: rgba(0, 255, 136, 0.03) !important;
+        }
+
+        .badge-aprobado {
+            background: rgba(0, 255, 136, 0.15);
+            color: #00ff88;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: 1px solid rgba(0, 255, 136, 0.15);
+        }
+        .badge-pendiente {
+            background: rgba(255, 170, 0, 0.15);
+            color: #ffaa00;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 170, 0, 0.15);
+        }
+        .badge-rechazado {
+            background: rgba(255, 23, 68, 0.15);
+            color: #ff1744;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 23, 68, 0.15);
+        }
+        .badge-activo {
+            background: rgba(0, 191, 255, 0.15);
+            color: #00bfff;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: 1px solid rgba(0, 191, 255, 0.15);
+        }
+
+        /* ============================================================
+           FIRMA GAMER EN LA TABLA
+           ============================================================ */
+        .firma-gamer {
+            width: 120px;
+            height: 40px;
+            border-radius: 8px;
+            background: #0a0a0a;
+            border: 1px solid rgba(0, 255, 136, 0.15);
+            display: inline-block;
+            animation: firmaGlow 3s ease-in-out infinite;
+        }
+        .firma-gamer img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+        @keyframes firmaGlow {
+            0% { border-color: #00ff88; box-shadow: 0 0 10px rgba(0, 255, 136, 0.2); }
+            25% { border-color: #ff00ff; box-shadow: 0 0 15px rgba(255, 0, 255, 0.2); }
+            50% { border-color: #ff6d00; box-shadow: 0 0 20px rgba(255, 109, 0, 0.2); }
+            75% { border-color: #00bfff; box-shadow: 0 0 15px rgba(0, 191, 255, 0.2); }
+            100% { border-color: #00ff88; box-shadow: 0 0 10px rgba(0, 255, 136, 0.2); }
+        }
+
+        .badge-firma {
+            background: rgba(0, 191, 255, 0.1);
+            color: #00bfff;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            border: 1px solid rgba(0, 191, 255, 0.1);
+        }
+
+        .btn-solicitar {
+            background: transparent;
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-solicitar:hover {
+            background: #00ff88;
+            color: #0a0a0a;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.15);
+            transform: scale(1.02);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: rgba(255,255,255,0.15);
+        }
+        .empty-state i {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 576px) {
+            .card-gamer {
+                padding: 18px 14px;
+            }
+            .page-title {
+                font-size: 20px;
+            }
+            .btn-solicitar {
+                font-size: 0.8rem;
+                padding: 8px 16px;
+            }
+            .table-gamer thead th,
+            .table-gamer tbody td {
+                padding: 10px 10px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    NAVBAR
+    ============================================================ -->
+    <nav class="navbar navbar-expand-lg navbar-capsule sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/dashboard">
+                <span class="capsule-logo">C</span>
+                CapsulaBank
+                <span class="capsule-badge">CLIENTE</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard"><i class="bi bi-house-fill"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/transferencia"><i class="bi bi-arrow-left-right"></i> Transferir</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/credito"><i class="bi bi-credit-card"></i> Créditos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/mis-creditos"><i class="bi bi-clock-history"></i> Mis Créditos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/perfil"><i class="bi bi-person-circle"></i> Mi Perfil</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle" style="color: #00ff88;"></i> 
+                            <span th:text="${usuario != null ? usuario.nombre : 'Usuario'}">Usuario</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" style="background: #0a0a0a; border: 1px solid rgba(0,255,136,0.15); border-radius: 12px;">
+                            <li>
+                                <form action="/logout" method="post">
+                                    <button type="submit" class="dropdown-item text-danger fw-bold">
+                                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+    CONTENIDO
+    ============================================================ -->
+    <div class="container-custom">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <h1 class="page-title">
+                <i class="bi bi-credit-card-2-front"></i> Mis Créditos
+            </h1>
+            <a href="/credito" class="btn-solicitar">
+                <i class="bi bi-plus-circle"></i> Solicitar Crédito
+            </a>
+        </div>
+
+        <div class="card-gamer">
+            <div class="table-responsive">
+                <table class="table table-gamer">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-calendar3"></i> Fecha</th>
+                            <th><i class="bi bi-cash"></i> Monto</th>
+                            <th><i class="bi bi-shield-check"></i> Estado</th>
+                            <th><i class="bi bi-pen"></i> Firma</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="credito : ${creditos}">
+                            <td th:text="${#temporals.format(credito.fecha, 'dd/MM/yyyy HH:mm')}">23/07/2026 11:09</td>
+                            <td>
+                                <span class="fw-bold" style="color: #00ff88;" 
+                                      th:text="${'$' + #numbers.formatDecimal(credito.montoSolicitado, 1, 'COMMA', 2, 'POINT')}">
+                                    $10,000.00
+                                </span>
+                            </td>
+                            <td>
+                                <span th:if="${credito.estado == 'APROBADO' or credito.estado == 'AUTORIZADO'}" 
+                                      class="badge-aprobado">
+                                    <i class="bi bi-check-circle-fill"></i> Aprobado
+                                </span>
+                                <span th:if="${credito.estado == 'PENDIENTE'}" 
+                                      class="badge-pendiente">
+                                    <i class="bi bi-clock"></i> Pendiente
+                                </span>
+                                <span th:if="${credito.estado == 'RECHAZADO'}" 
+                                      class="badge-rechazado">
+                                    <i class="bi bi-x-circle-fill"></i> Rechazado
+                                </span>
+                                <span th:if="${credito.estado == 'ACTIVO'}" 
+                                      class="badge-activo">
+                                    <i class="bi bi-check-circle-fill"></i> Activo
+                                </span>
+                            </td>
+                            <td>
+                                <!-- FIRMA GAMER CON EFECTO ANIMADO -->
+                                <span th:if="${credito.firmaDigital != null and credito.firmaDigital != ''}">
+                                    <div class="firma-gamer">
+                                        <img th:src="${credito.firmaDigital}" alt="Firma del cliente"/>
+                                    </div>
+                                </span>
+                                <span th:unless="${credito.firmaDigital != null and credito.firmaDigital != ''}" 
+                                      class="badge-firma" 
+                                      style="border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3);">
+                                    <i class="bi bi-clock"></i> Sin firma
+                                </span>
+                            </td>
+                        </tr>
+                        <tr th:if="${creditos == null or creditos.isEmpty()}">
+                            <td colspan="4">
+                                <div class="empty-state">
+                                    <i class="bi bi-inbox"></i>
+                                    <p>No tienes solicitudes de crédito</p>
+                                    <a href="/credito" class="btn-solicitar" style="display: inline-flex; margin-top: 15px;">
+                                        <i class="bi bi-plus-circle"></i> Solicitar mi primer crédito
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
