@@ -1,5 +1,6 @@
 package com.jahm.bancocapsula.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import com.jahm.bancocapsula.entity.SolicitudCreditoEntity;
 import com.jahm.bancocapsula.entity.UsuarioEntity;
 import com.jahm.bancocapsula.repository.SolicitudCreditoRepository;
 import com.jahm.bancocapsula.repository.UsuarioRepository;
+import com.jahm.bancocapsula.service.ReporteService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +23,9 @@ public class CreditoController {
 
     private final SolicitudCreditoRepository solicitudCreditoRepository;
     private final UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private ReporteService reporteService;
 
     public CreditoController(SolicitudCreditoRepository solicitudCreditoRepository,
                            UsuarioRepository usuarioRepository) {
@@ -63,7 +68,6 @@ public class CreditoController {
 
         String username = auth.getName();
 
-        // Validaciones
         if (monto == null || monto <= 0) {
             redirectAttributes.addFlashAttribute("error", "El monto debe ser mayor a 0");
             return "redirect:/credito";

@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +28,9 @@ import com.jahm.bancocapsula.repository.SolicitudCreditoRepository;
 import com.jahm.bancocapsula.repository.UsuarioRepository;
 import com.jahm.bancocapsula.service.BancaService;
 import com.jahm.bancocapsula.service.TransferenciaService;
+import com.jahm.bancocapsula.service.ReporteService;
+
+import java.io.ByteArrayOutputStream;
 
 @Controller
 @RequestMapping("/admin")
@@ -37,6 +44,9 @@ public class AdminController {
     
     @Autowired
     private TransferenciaService transferenciaService;
+
+    @Autowired
+    private ReporteService reporteService;
 
     public AdminController(BancaService bancaService, 
                           UsuarioRepository usuarioRepository, 
@@ -155,12 +165,10 @@ public class AdminController {
         modelo.addAttribute("valoresMovimientos", valoresMovimientos);
         modelo.addAttribute("coloresMovimientos", coloresMovimientos);
         
-        // 🔥 LIMITAR A 10 SOLICITUDES Y RECORTAR FIRMAS
         List<SolicitudCreditoEntity> solicitudes = solicitudCreditoRepository.findAllByOrderByFechaDesc()
             .stream()
             .limit(10)
             .map(s -> {
-                // Recortar la firma si es muy grande para que no sature
                 if (s.getFirmaDigital() != null && s.getFirmaDigital().length() > 5000) {
                     s.setFirmaDigital(s.getFirmaDigital().substring(0, 5000) + "...");
                 }
@@ -391,5 +399,115 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/admin/dashboard";
         }
+    }
+
+    // ============================================================
+    // REPORTES PDF
+    // ============================================================
+
+    @GetMapping("/reporte/creditos/cliente/{id}")
+    public ResponseEntity<ByteArrayResource> reporteCreditosCliente(@PathVariable Long id) {
+        try {
+            UsuarioEntity cliente = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+            List<SolicitudCreditoEntity> creditos = solicitudCreditoRepository.findByUsuarioOrderByFechaDesc(cliente);
+            
+            ByteArrayOutputStream pdfStream = reporteService.generarReporteCreditos(cliente, creditos);
+            ByteArrayResource resource = new ByteArrayResource(pdfStream.toByteArray());
+
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=reporte_creditos_" + cliente.getUsername() + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/reporte/movimientos/cliente/{id}")
+    public ResponseEntity<ByteArrayResource> reporteMovimientosCliente(@PathVariable Long id) {
+        try {
+            UsuarioEntity cliente = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+            List<CuentaEntity> cuentas = cuentaRepository.findByUsuario(cliente);
+            List<String> clabes = cuentas.stream().map(CuentaEntity::getClabe).collect(Collectors.toList());
+
+            List<MovimientoEntity> movimientos = movimientoCuentaRepository
+                .findByCuentaOrigenInOrCuentaDestinoInOrderByFechaDesc(clabes, clabes);
+
+            ByteArrayOutputStream pdfStream = reporteService.generarReporteMovimientos(cliente, movimientos);
+            ByteArrayResource resource = new ByteArrayResource(pdfStream.toByteArray());
+
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=reporte_movimientos_" + cliente.getUsername() + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/oficio-credito/{id}")
+    public ResponseEntity<ByteArrayResource> oficioCredito(@PathVariable Long id) {
+        try {
+            SolicitudCreditoEntity credito = solicitudCreditoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Credito no encontrado"));
+
+            ByteArrayOutputStream pdfStream = reporteService.generarOficioCredito(credito);
+            ByteArrayResource resource = new ByteArrayResource(pdfStream.toByteArray());
+
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=oficio_credito_" + credito.getId() + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/reporte/creditos/todos")
+    public ResponseEntity<ByteArrayResource> reporteCreditosTodos() {
+        try {
+            List<SolicitudCreditoEntity> todosLosCreditos = solicitudCreditoRepository.findAll();
+            
+            ByteArrayOutputStream pdfStream = reporteService.generarReporteCreditosGeneral(todosLosCreditos);
+            ByteArrayResource resource = new ByteArrayResource(pdfStream.toByteArray());
+
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=reporte_creditos_general.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/reporte/movimientos/todos")
+    public ResponseEntity<ByteArrayResource> reporteMovimientosTodos() {
+        try {
+            List<MovimientoEntity> todosLosMovimientos = movimientoCuentaRepository.findAll();
+            
+            ByteArrayOutputStream pdfStream = reporteService.generarReporteMovimientosGeneral(todosLosMovimientos);
+            ByteArrayResource resource = new ByteArrayResource(pdfStream.toByteArray());
+
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=reporte_movimientos_general.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("✅ El controlador ADMIN funciona correctamente! Fecha: " + java.time.LocalDateTime.now());
     }
 }
