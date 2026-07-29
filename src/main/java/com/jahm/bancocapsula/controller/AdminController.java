@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.jahm.bancocapsula.dto.ClienteCreditosDTO;
 import com.jahm.bancocapsula.dto.TransferenciaDTO;
 import com.jahm.bancocapsula.entity.CuentaEntity;
 import com.jahm.bancocapsula.entity.MovimientoEntity;
@@ -31,6 +32,9 @@ import com.jahm.bancocapsula.service.TransferenciaService;
 import com.jahm.bancocapsula.service.ReporteService;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
@@ -210,10 +214,50 @@ public class AdminController {
         }
     }
 
+    // ============================================================
+    // ✅ LISTAR CLIENTES CON CRÉDITOS (SOLO UNA VEZ POR CLIENTE)
+    // ============================================================
     @GetMapping("/creditos")
-    public String listarCreditos(Model model) {
-        List<SolicitudCreditoEntity> solicitudes = solicitudCreditoRepository.findAllByOrderByFechaDesc();
-        model.addAttribute("solicitudes", solicitudes);
+    public String listarClientesConCreditos(Model model) {
+        // Obtener todos los créditos
+        List<SolicitudCreditoEntity> todosLosCreditos = solicitudCreditoRepository.findAll();
+        
+        // Agrupar por cliente
+        Map<UsuarioEntity, List<SolicitudCreditoEntity>> creditosPorCliente = new HashMap<>();
+        
+        for (SolicitudCreditoEntity credito : todosLosCreditos) {
+            UsuarioEntity cliente = credito.getUsuario();
+            if (!creditosPorCliente.containsKey(cliente)) {
+                creditosPorCliente.put(cliente, new ArrayList<>());
+            }
+            creditosPorCliente.get(cliente).add(credito);
+        }
+        
+        // Crear lista de DTOs con la información agregada
+        List<ClienteCreditosDTO> clientesConCreditos = new ArrayList<>();
+        for (Map.Entry<UsuarioEntity, List<SolicitudCreditoEntity>> entry : creditosPorCliente.entrySet()) {
+            UsuarioEntity cliente = entry.getKey();
+            List<SolicitudCreditoEntity> creditos = entry.getValue();
+            
+            ClienteCreditosDTO dto = new ClienteCreditosDTO();
+            dto.setId(cliente.getId());
+            dto.setNombre(cliente.getNombre());
+            dto.setUsername(cliente.getUsername());
+            dto.setTotalCreditos(creditos.size());
+            
+            double montoTotal = 0.0;
+            for (SolicitudCreditoEntity c : creditos) {
+                montoTotal += c.getMontoSolicitado();
+            }
+            dto.setMontoTotal(montoTotal);
+            
+            clientesConCreditos.add(dto);
+        }
+        
+        // Ordenar por nombre
+        clientesConCreditos.sort((a, b) -> a.getNombre().compareTo(b.getNombre()));
+        
+        model.addAttribute("clientesConCreditos", clientesConCreditos);
         return "admin-creditos";
     }
 
