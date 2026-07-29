@@ -402,7 +402,7 @@ public class AdminController {
     }
 
     // ============================================================
-    // REPORTES PDF - ENDPOINTS AGREGADOS
+    // REPORTES PDF
     // ============================================================
 
     @GetMapping("/reporte/creditos/cliente/{id}")
