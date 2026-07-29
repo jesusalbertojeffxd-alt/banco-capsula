@@ -228,14 +228,14 @@ public class ReporteService {
     }
 
     // ============================================================
-    // REPORTE GENERAL DE CREDITOS - TODOS LOS CLIENTES
+    // REPORTE GENERAL DE CREDITOS - TODOS LOS CLIENTES (CORREGIDO)
     // ============================================================
     public ByteArrayOutputStream generarReporteCreditosGeneral(List<SolicitudCreditoEntity> creditos) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             PdfWriter writer = new PdfWriter(outputStream);
             PdfDocument pdfDoc = new PdfDocument(writer);
-            Document document = new Document(pdfDoc, PageSize.A4.rotate());
+            Document document = new Document(pdfDoc, PageSize.A4);
             document.setMargins(30, 30, 30, 30);
 
             Paragraph titulo = new Paragraph("REPORTE GENERAL DE CREDITOS")
@@ -280,14 +280,14 @@ public class ReporteService {
     }
 
     // ============================================================
-    // REPORTE GENERAL DE MOVIMIENTOS - TODOS LOS CLIENTES
+    // REPORTE GENERAL DE MOVIMIENTOS - TODOS LOS CLIENTES (CORREGIDO)
     // ============================================================
     public ByteArrayOutputStream generarReporteMovimientosGeneral(List<MovimientoEntity> movimientos) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             PdfWriter writer = new PdfWriter(outputStream);
             PdfDocument pdfDoc = new PdfDocument(writer);
-            Document document = new Document(pdfDoc, PageSize.A4.rotate());
+            Document document = new Document(pdfDoc, PageSize.A4);
             document.setMargins(30, 30, 30, 30);
 
             Paragraph titulo = new Paragraph("REPORTE GENERAL DE MOVIMIENTOS")
