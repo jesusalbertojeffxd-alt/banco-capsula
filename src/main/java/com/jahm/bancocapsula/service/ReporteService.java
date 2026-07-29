@@ -16,6 +16,7 @@ import com.jahm.bancocapsula.entity.UsuarioEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -24,6 +25,29 @@ import java.util.List;
 public class ReporteService {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    // ============================================================
+    // MÉTODO PARA FORMATEAR FECHAS - ACEPTA CUALQUIER TIPO
+    // ============================================================
+    private String formatearFecha(Object fecha) {
+        if (fecha == null) {
+            return "N/A";
+        }
+        try {
+            if (fecha instanceof LocalDateTime) {
+                return ((LocalDateTime) fecha).format(FORMATTER);
+            } else if (fecha instanceof LocalDate) {
+                return ((LocalDate) fecha).format(DATE_FORMATTER);
+            } else if (fecha instanceof String) {
+                return (String) fecha;
+            } else {
+                return fecha.toString();
+            }
+        } catch (Exception e) {
+            return "N/A";
+        }
+    }
 
     // ============================================================
     // REPORTE DE CREDITOS POR CLIENTE
@@ -65,10 +89,10 @@ public class ReporteService {
             agregarCeldaHeader(tablaCreditos, "Fecha Aprobacion");
 
             for (SolicitudCreditoEntity credito : creditos) {
-                tablaCreditos.addCell(new Cell().add(new Paragraph(credito.getFecha().format(FORMATTER))));
+                tablaCreditos.addCell(new Cell().add(new Paragraph(formatearFecha(credito.getFecha()))));
                 tablaCreditos.addCell(new Cell().add(new Paragraph("$" + String.format("%,.2f", credito.getMontoSolicitado()))));
                 tablaCreditos.addCell(new Cell().add(new Paragraph(credito.getEstado())));
-                tablaCreditos.addCell(new Cell().add(new Paragraph(credito.getFecha() != null ? credito.getFecha().format(FORMATTER) : "N/A")));
+                tablaCreditos.addCell(new Cell().add(new Paragraph(formatearFecha(credito.getFecha()))));
             }
 
             document.add(tablaCreditos);
@@ -123,7 +147,7 @@ public class ReporteService {
             agregarCeldaHeader(tablaMovimientos, "Descripcion");
 
             for (MovimientoEntity mov : movimientos) {
-                tablaMovimientos.addCell(new Cell().add(new Paragraph(mov.getFecha() != null ? mov.getFecha().format(FORMATTER) : "N/A")));
+                tablaMovimientos.addCell(new Cell().add(new Paragraph(formatearFecha(mov.getFecha()))));
                 tablaMovimientos.addCell(new Cell().add(new Paragraph(mov.getCuentaOrigen() != null ? mov.getCuentaOrigen() : "N/A")));
                 tablaMovimientos.addCell(new Cell().add(new Paragraph(mov.getCuentaDestino() != null ? mov.getCuentaDestino() : "N/A")));
                 tablaMovimientos.addCell(new Cell().add(new Paragraph("$" + String.format("%,.2f", mov.getMonto()))));
@@ -171,7 +195,7 @@ public class ReporteService {
                 .setTextAlignment(TextAlignment.CENTER));
             document.add(new Paragraph(" ").setHeight(15));
 
-            document.add(new Paragraph("Fecha: " + credito.getFecha().format(FORMATTER))
+            document.add(new Paragraph("Fecha: " + formatearFecha(credito.getFecha()))
                 .setTextAlignment(TextAlignment.RIGHT)
                 .setFontSize(10));
             document.add(new Paragraph(" ").setHeight(15));
@@ -193,7 +217,7 @@ public class ReporteService {
             agregarFila(infoCredito, "Usuario:", credito.getUsuario().getUsername());
             agregarFila(infoCredito, "Rol:", credito.getUsuario().getRol());
             agregarFila(infoCredito, "Monto Autorizado:", "$" + String.format("%,.2f", credito.getMontoSolicitado()));
-            agregarFila(infoCredito, "Fecha Solicitud:", credito.getFecha().format(FORMATTER));
+            agregarFila(infoCredito, "Fecha Solicitud:", formatearFecha(credito.getFecha()));
             agregarFila(infoCredito, "Fecha Aprobacion:", LocalDateTime.now().format(FORMATTER));
             agregarFila(infoCredito, "Estado:", "APROBADO");
 
@@ -228,7 +252,7 @@ public class ReporteService {
     }
 
     // ============================================================
-    // REPORTE GENERAL DE CREDITOS - TODOS LOS CLIENTES (CORREGIDO)
+    // REPORTE GENERAL DE CREDITOS - TODOS LOS CLIENTES
     // ============================================================
     public ByteArrayOutputStream generarReporteCreditosGeneral(List<SolicitudCreditoEntity> creditos) {
         try {
@@ -267,7 +291,7 @@ public class ReporteService {
                 tabla.addCell(new Cell().add(new Paragraph(c.getUsuario().getUsername())));
                 tabla.addCell(new Cell().add(new Paragraph("$" + String.format("%,.2f", c.getMontoSolicitado()))));
                 tabla.addCell(new Cell().add(new Paragraph(c.getEstado())));
-                tabla.addCell(new Cell().add(new Paragraph(c.getFecha().format(FORMATTER))));
+                tabla.addCell(new Cell().add(new Paragraph(formatearFecha(c.getFecha()))));
             }
 
             document.add(tabla);
@@ -280,7 +304,7 @@ public class ReporteService {
     }
 
     // ============================================================
-    // REPORTE GENERAL DE MOVIMIENTOS - TODOS LOS CLIENTES (CORREGIDO)
+    // REPORTE GENERAL DE MOVIMIENTOS - TODOS LOS CLIENTES
     // ============================================================
     public ByteArrayOutputStream generarReporteMovimientosGeneral(List<MovimientoEntity> movimientos) {
         try {
@@ -321,7 +345,7 @@ public class ReporteService {
                 tabla.addCell(new Cell().add(new Paragraph("$" + String.format("%,.2f", m.getMonto()))));
                 tabla.addCell(new Cell().add(new Paragraph(m.getTipo() != null ? m.getTipo() : "N/A")));
                 tabla.addCell(new Cell().add(new Paragraph(m.getEstadoMovimiento() != null ? m.getEstadoMovimiento() : "N/A")));
-                tabla.addCell(new Cell().add(new Paragraph(m.getFecha() != null ? m.getFecha().format(FORMATTER) : "N/A")));
+                tabla.addCell(new Cell().add(new Paragraph(formatearFecha(m.getFecha()))));
             }
 
             document.add(tabla);
