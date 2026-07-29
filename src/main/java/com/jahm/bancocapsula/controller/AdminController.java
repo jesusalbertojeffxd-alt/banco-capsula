@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.jahm.bancocapsula.dto.TransferenciaDTO;  // ✅ IMPORT AGREGADO
+import com.jahm.bancocapsula.dto.TransferenciaDTO;
 import com.jahm.bancocapsula.entity.CuentaEntity;
 import com.jahm.bancocapsula.entity.MovimientoEntity;
 import com.jahm.bancocapsula.entity.SolicitudCreditoEntity;
@@ -50,9 +50,6 @@ public class AdminController {
         this.movimientoCuentaRepository = movimientoCuentaRepository;
     }
 
-    // ============================================================
-    // DASHBOARD
-    // ============================================================
     @GetMapping("/dashboard")
     public String mostrarDashboard(Model modelo) {
         
@@ -158,15 +155,23 @@ public class AdminController {
         modelo.addAttribute("valoresMovimientos", valoresMovimientos);
         modelo.addAttribute("coloresMovimientos", coloresMovimientos);
         
-        List<SolicitudCreditoEntity> solicitudes = solicitudCreditoRepository.findAllByOrderByFechaDesc();
+        // 🔥 LIMITAR A 10 SOLICITUDES Y RECORTAR FIRMAS
+        List<SolicitudCreditoEntity> solicitudes = solicitudCreditoRepository.findAllByOrderByFechaDesc()
+            .stream()
+            .limit(10)
+            .map(s -> {
+                // Recortar la firma si es muy grande para que no sature
+                if (s.getFirmaDigital() != null && s.getFirmaDigital().length() > 5000) {
+                    s.setFirmaDigital(s.getFirmaDigital().substring(0, 5000) + "...");
+                }
+                return s;
+            })
+            .collect(Collectors.toList());
         modelo.addAttribute("solicitudes", solicitudes);
         
         return "admin";
     }
 
-    // ============================================================
-    // CLIENTES - LISTAR TODOS LOS CLIENTES
-    // ============================================================
     @GetMapping("/clientes")
     public String listarClientes(Model model) {
         List<UsuarioEntity> clientes = usuarioRepository.findAll().stream()
@@ -177,9 +182,6 @@ public class AdminController {
         return "admin-clientes";
     }
 
-    // ============================================================
-    // ELIMINAR CLIENTE
-    // ============================================================
     @PostMapping("/clientes/{id}/eliminar")
     public String eliminarCliente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -200,9 +202,6 @@ public class AdminController {
         }
     }
 
-    // ============================================================
-    // CRÉDITOS - LISTAR TODAS LAS SOLICITUDES
-    // ============================================================
     @GetMapping("/creditos")
     public String listarCreditos(Model model) {
         List<SolicitudCreditoEntity> solicitudes = solicitudCreditoRepository.findAllByOrderByFechaDesc();
@@ -210,9 +209,6 @@ public class AdminController {
         return "admin-creditos";
     }
 
-    // ============================================================
-    // CUENTAS - LISTAR TODAS LAS CUENTAS
-    // ============================================================
     @GetMapping("/cuentas")
     public String listarCuentas(Model model) {
         List<CuentaEntity> cuentas = cuentaRepository.findAll();
@@ -220,9 +216,6 @@ public class AdminController {
         return "admin-cuentas";
     }
 
-    // ============================================================
-    // MOVIMIENTOS - LISTAR TODOS LOS MOVIMIENTOS UNIFICADOS
-    // ============================================================
     @GetMapping("/movimientos")
     public String listarMovimientos(Model model) {
         List<MovimientoEntity> movimientos = movimientoCuentaRepository.findAllByOrderByFechaDesc();
@@ -291,9 +284,6 @@ public class AdminController {
         return "admin-movimientos";
     }
 
-    // ============================================================
-    // AUTORIZAR MOVIMIENTO
-    // ============================================================
     @PostMapping("/movimientos/{id}/autorizar")
     public String autorizarMovimiento(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -311,9 +301,6 @@ public class AdminController {
         }
     }
 
-    // ============================================================
-    // CANCELAR MOVIMIENTO
-    // ============================================================
     @PostMapping("/movimientos/{id}/cancelar")
     public String cancelarMovimiento(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -331,9 +318,6 @@ public class AdminController {
         }
     }
 
-    // ============================================================
-    // CONFIRMAR TRANSFERENCIA
-    // ============================================================
     @PostMapping("/movimientos/{id}/confirmar")
     public String confirmarTransferencia(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -345,9 +329,6 @@ public class AdminController {
         return "redirect:/admin/movimientos";
     }
 
-    // ============================================================
-    // CANCELAR TRANSFERENCIA
-    // ============================================================
     @PostMapping("/movimientos/{id}/cancelar-transferencia")
     public String cancelarTransferencia(@PathVariable Long id,
                                         @RequestParam String motivo,
@@ -361,9 +342,6 @@ public class AdminController {
         return "redirect:/admin/movimientos";
     }
 
-    // ============================================================
-    // CREAR CLIENTE
-    // ============================================================
     @PostMapping("/crear")
     public String crearcliente(@RequestParam String username,
                                @RequestParam String password,
@@ -391,9 +369,6 @@ public class AdminController {
         }
     }
 
-    // ============================================================
-    // APROBAR CRÉDITO
-    // ============================================================
     @PostMapping("/creditos/{id}/aprobar")
     public String aprobarCredito(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -406,9 +381,6 @@ public class AdminController {
         }
     }
 
-    // ============================================================
-    // RECHAZAR CRÉDITO
-    // ============================================================
     @PostMapping("/creditos/{id}/rechazar")
     public String rechazarCredito(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
