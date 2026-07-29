@@ -40,6 +40,8 @@
         .btn-aprobar-gamer:hover{transform:scale(1.05)!important;box-shadow:0 0 20px rgba(0,255,136,0.4)!important}
         .btn-rechazar-gamer{background:#ff1744!important;color:#fff!important}
         .btn-rechazar-gamer:hover{transform:scale(1.05)!important;box-shadow:0 0 20px rgba(255,23,68,0.4)!important}
+        .btn-oficio-gamer{background:rgba(255,109,0,0.15)!important;color:#ff6d00!important;border:1px solid rgba(255,109,0,0.2)!important;border-radius:20px!important;padding:4px 10px!important;text-decoration:none!important;font-size:0.6rem!important;font-weight:600!important;transition:all .3s!important;display:inline-flex!important;align-items:center!important;gap:4px!important}
+        .btn-oficio-gamer:hover{background:#ff6d00!important;color:#fff!important;transform:scale(1.05)!important;box-shadow:0 0 20px rgba(255,109,0,0.3)!important}
         .alert-gamer-success{background:rgba(0,255,136,0.1)!important;border:1px solid rgba(0,255,136,0.3)!important;color:#00ff88!important}
         .alert-gamer-danger{background:rgba(255,23,68,0.1)!important;border:1px solid rgba(255,23,68,0.3)!important;color:#ff6b81!important}
         .footer-capsule{background:rgba(10,10,10,0.95);border-top:1px solid rgba(255,255,255,0.03);padding:30px 0 15px;margin-top:40px}
@@ -59,6 +61,13 @@
         .stat-movimientos{border-color:#ffaa00}.stat-movimientos .stat-icon{color:#ffaa00}.stat-movimientos .stat-number{color:#ffaa00}
         @media(max-width:768px){.stat-number{font-size:24px}}
         @media(max-width:576px){.stat-card{padding:15px}.stat-number{font-size:20px}}
+        .btn-pdf-creditos{background:rgba(0,255,136,0.15)!important;color:#00ff88!important;border:1px solid rgba(0,255,136,0.2)!important;border-radius:20px!important;padding:8px 18px!important;text-decoration:none!important;font-size:.75rem!important;font-weight:600!important;transition:all .3s!important;display:inline-flex!important;align-items:center!important;gap:8px!important}
+        .btn-pdf-creditos:hover{background:#00ff88!important;color:#000!important;transform:scale(1.05)!important;box-shadow:0 0 30px rgba(0,255,136,0.3)!important}
+        .btn-pdf-movimientos{background:rgba(0,191,255,0.15)!important;color:#00bfff!important;border:1px solid rgba(0,191,255,0.2)!important;border-radius:20px!important;padding:8px 18px!important;text-decoration:none!important;font-size:.75rem!important;font-weight:600!important;transition:all .3s!important;display:inline-flex!important;align-items:center!important;gap:8px!important}
+        .btn-pdf-movimientos:hover{background:#00bfff!important;color:#000!important;transform:scale(1.05)!important;box-shadow:0 0 30px rgba(0,191,255,0.3)!important}
+        .reportes-container{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+        .reportes-card .card-body{padding:15px 20px}
+        .text-muted-light{color:rgba(255,255,255,0.5)!important}
     </style>
 </head>
 <body>
@@ -160,6 +169,39 @@
                     <span class="stat-icon"><i class="bi bi-arrow-left-right"></i></span>
                     <div class="stat-number" th:text="${totalMovimientos}">0</div>
                     <div class="stat-label"><i class="bi bi-clock-history"></i> MOVIMIENTOS TOTALES</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        REPORTES PDF - BOTONES DE REPORTES GENERALES
+        ============================================================ -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card card-dark border-0 shadow-lg reportes-card">
+                    <div class="card-header bg-dark border-bottom border-secondary border-opacity-25">
+                        <h4 class="text-white mb-0">
+                            <i class="bi bi-file-pdf text-danger me-2"></i>
+                            Reportes Generales - TODOS los clientes
+                        </h4>
+                    </div>
+                    <div class="card-body text-center py-3">
+                        <div class="reportes-container">
+                            <a href="/admin/reporte/creditos/todos" 
+                               class="btn-pdf-creditos"
+                               target="_blank">
+                                <i class="bi bi-file-pdf"></i> Creditos Generales (Todos)
+                            </a>
+                            <a href="/admin/reporte/movimientos/todos" 
+                               class="btn-pdf-movimientos"
+                               target="_blank">
+                                <i class="bi bi-file-pdf"></i> Movimientos Generales (Todos)
+                            </a>
+                        </div>
+                        <small class="text-muted-light mt-2 d-block">
+                            <i class="bi bi-info-circle"></i> Reportes de TODOS los clientes en un solo PDF
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -308,6 +350,13 @@
                                             <span th:if="${solicitud.estado == 'RECHAZADO'}" class="badge badge-rechazado">
                                                 <i class="bi bi-x-circle-fill me-1"></i> Rechazado
                                             </span>
+                                            <!-- ✅ OFICIO -->
+                                            <a th:if="${solicitud.estado == 'APROBADO' or solicitud.estado == 'AUTORIZADO'}" 
+                                               th:href="@{/admin/oficio-credito/{id}(id=${solicitud.id})}" 
+                                               class="btn-oficio-gamer"
+                                               target="_blank">
+                                                <i class="bi bi-file-pdf"></i> Oficio
+                                            </a>
                                         </td>
                                     </tr>
                                     <tr th:if="${solicitudes == null or solicitudes.isEmpty()}">
