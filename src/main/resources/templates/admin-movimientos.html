@@ -130,7 +130,7 @@
                             <!-- TRANSFERENCIAS UNIFICADAS -->
                             <tr th:each="transferencia : ${transferencias}">
                                 <td th:text="${transferencia.id}">1</td>
-                                <td th:text="${#dates.format(transferencia.fecha, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</td>
+                                <td th:text="${#temporals.format(transferencia.fecha, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</td>
                                 <td><span class="badge bg-warning text-dark" th:text="${transferencia.cuentaOrigen}">CL012345678901</span></td>
                                 <td><span class="badge bg-info text-dark" th:text="${transferencia.cuentaDestino}">CL098765432112</span></td>
                                 <td>
@@ -212,7 +212,7 @@
                             <!-- OTROS MOVIMIENTOS -->
                             <tr th:each="mov : ${otrosMovimientos}">
                                 <td th:text="${mov.id}">1</td>
-                                <td th:text="${#dates.format(mov.fecha, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</td>
+                                <td th:text="${#temporals.format(mov.fecha, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</td>
                                 <td th:text="${mov.cuentaOrigen}">000000000000000000</td>
                                 <td th:text="${mov.cuentaDestino}">000000000000000000</td>
                                 <td>
