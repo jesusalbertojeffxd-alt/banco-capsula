@@ -24,7 +24,10 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/registro", "/css/**", "/js/**", "/img/**", "/styles.css").permitAll()
                 .requestMatchers("/creditos/**").authenticated()
                 .requestMatchers("/dashboard").authenticated()
-                // ✅ CAMBIO: Usar hasAuthority en lugar de hasAnyRole
+                // Permitir reportes PDF
+                .requestMatchers("/admin/reporte/**").permitAll()
+                .requestMatchers("/admin/oficio-credito/**").permitAll()
+                .requestMatchers("/admin/test").permitAll()
                 .requestMatchers("/admin/**").hasAnyAuthority("EJECUTIVO", "ADMIN", "ROLE_EJECUTIVO", "ROLE_ADMIN")
                 .requestMatchers("/perfil").authenticated()
                 .requestMatchers("/perfil/**").authenticated()
