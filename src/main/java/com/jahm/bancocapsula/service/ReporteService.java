@@ -135,7 +135,7 @@ public class ReporteService {
             document.add(infoCliente);
             document.add(new Paragraph(" ").setHeight(10));
 
-            Table tablaMovimientos = new Table(UnitValue.createPercentArray(new float[]{15, 18, 18, 15, 15, 10, 9}));
+            Table tablaMovimientos = new Table(UnitValue.createPercentArray(new float[]{12, 16, 16, 12, 14, 12, 10}));
             tablaMovimientos.setWidth(UnitValue.createPercentValue(100));
 
             agregarCeldaHeader(tablaMovimientos, "Fecha");
@@ -252,18 +252,19 @@ public class ReporteService {
     }
 
     // ============================================================
-    // REPORTE GENERAL DE CREDITOS - TODOS LOS CLIENTES
+    // REPORTE GENERAL DE CREDITOS - TODOS LOS CLIENTES (HORIZONTAL)
     // ============================================================
     public ByteArrayOutputStream generarReporteCreditosGeneral(List<SolicitudCreditoEntity> creditos) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             PdfWriter writer = new PdfWriter(outputStream);
             PdfDocument pdfDoc = new PdfDocument(writer);
-            Document document = new Document(pdfDoc, PageSize.A4);
-            document.setMargins(30, 30, 30, 30);
+            // ✅ ORIENTACIÓN HORIZONTAL (Landscape)
+            Document document = new Document(pdfDoc, PageSize.A4.rotate());
+            document.setMargins(20, 20, 20, 20);
 
             Paragraph titulo = new Paragraph("REPORTE GENERAL DE CREDITOS")
-                .setFontSize(18)
+                .setFontSize(16)
                 .setBold()
                 .setTextAlignment(TextAlignment.CENTER)
                 .setFontColor(ColorConstants.GREEN);
@@ -275,7 +276,7 @@ public class ReporteService {
                 .setFontColor(ColorConstants.GRAY));
             document.add(new Paragraph(" ").setHeight(10));
 
-            Table tabla = new Table(UnitValue.createPercentArray(new float[]{8, 15, 12, 15, 12, 13}));
+            Table tabla = new Table(UnitValue.createPercentArray(new float[]{6, 15, 14, 15, 14, 16}));
             tabla.setWidth(UnitValue.createPercentValue(100));
 
             agregarCeldaHeader(tabla, "ID");
@@ -304,18 +305,19 @@ public class ReporteService {
     }
 
     // ============================================================
-    // REPORTE GENERAL DE MOVIMIENTOS - TODOS LOS CLIENTES
+    // REPORTE GENERAL DE MOVIMIENTOS - TODOS LOS CLIENTES (HORIZONTAL)
     // ============================================================
     public ByteArrayOutputStream generarReporteMovimientosGeneral(List<MovimientoEntity> movimientos) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             PdfWriter writer = new PdfWriter(outputStream);
             PdfDocument pdfDoc = new PdfDocument(writer);
-            Document document = new Document(pdfDoc, PageSize.A4);
-            document.setMargins(30, 30, 30, 30);
+            // ✅ ORIENTACIÓN HORIZONTAL (Landscape)
+            Document document = new Document(pdfDoc, PageSize.A4.rotate());
+            document.setMargins(20, 20, 20, 20);
 
             Paragraph titulo = new Paragraph("REPORTE GENERAL DE MOVIMIENTOS")
-                .setFontSize(18)
+                .setFontSize(16)
                 .setBold()
                 .setTextAlignment(TextAlignment.CENTER)
                 .setFontColor(ColorConstants.GREEN);
@@ -327,7 +329,7 @@ public class ReporteService {
                 .setFontColor(ColorConstants.GRAY));
             document.add(new Paragraph(" ").setHeight(10));
 
-            Table tabla = new Table(UnitValue.createPercentArray(new float[]{8, 14, 14, 12, 12, 10, 12}));
+            Table tabla = new Table(UnitValue.createPercentArray(new float[]{6, 14, 14, 12, 16, 12, 14}));
             tabla.setWidth(UnitValue.createPercentValue(100));
 
             agregarCeldaHeader(tabla, "ID");
