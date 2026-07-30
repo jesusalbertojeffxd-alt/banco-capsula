@@ -1,8 +1,13 @@
 package com.jahm.bancocapsula.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
@@ -15,6 +20,7 @@ import com.jahm.bancocapsula.repository.SolicitudCreditoRepository;
 import com.jahm.bancocapsula.repository.UsuarioRepository;
 import com.jahm.bancocapsula.service.ReporteService;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -116,6 +122,39 @@ public class CreditoController {
                     return "mis-creditos";
                 })
                 .orElse("redirect:/login");
+    }
+
+    // ============================================================
+    // PDF DEL CREDITO - VISTA PREVIA INDIVIDUAL
+    // ============================================================
+    @GetMapping("/credito/pdf/{id}")
+    public ResponseEntity<ByteArrayResource> generarPdfCredito(@PathVariable Long id, Authentication auth) {
+        try {
+            SolicitudCreditoEntity credito = solicitudCreditoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Credito no encontrado con ID: " + id));
+
+            UsuarioEntity usuario = usuarioRepository.findByUsername(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            // Verificar que el crédito pertenece al usuario autenticado o es ADMIN
+            if (!credito.getUsuario().getId().equals(usuario.getId()) && !"ADMIN".equals(usuario.getRol())) {
+                return ResponseEntity.status(403).build();
+            }
+
+            // Generar PDF con los datos del crédito
+            List<SolicitudCreditoEntity> creditos = List.of(credito);
+            ByteArrayOutputStream pdfStream = reporteService.generarReporteCreditos(usuario, creditos);
+            ByteArrayResource resource = new ByteArrayResource(pdfStream.toByteArray());
+
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=credito_" + credito.getId() + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
     }
 
     // ============================================================
