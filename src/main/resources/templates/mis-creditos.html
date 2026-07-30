@@ -145,9 +145,7 @@
             border: 1px solid rgba(0, 191, 255, 0.15);
         }
 
-        /* ============================================================
-           FIRMA GAMER EN LA TABLA
-           ============================================================ */
+        /* FIRMA GAMER */
         .firma-gamer {
             width: 120px;
             height: 40px;
@@ -199,6 +197,28 @@
             color: #0a0a0a;
             box-shadow: 0 0 30px rgba(0, 255, 136, 0.15);
             transform: scale(1.02);
+        }
+
+        /* ✅ NUEVO: Botón PDF Gamer */
+        .btn-pdf-gamer {
+            background: rgba(255, 109, 0, 0.15) !important;
+            color: #ff6d00 !important;
+            border: 1px solid rgba(255, 109, 0, 0.2) !important;
+            border-radius: 20px !important;
+            padding: 4px 12px !important;
+            text-decoration: none !important;
+            font-size: 0.6rem !important;
+            font-weight: 600 !important;
+            transition: all 0.3s !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+        }
+        .btn-pdf-gamer:hover {
+            background: #ff6d00 !important;
+            color: #fff !important;
+            transform: scale(1.05) !important;
+            box-shadow: 0 0 20px rgba(255, 109, 0, 0.3) !important;
         }
 
         .empty-state {
@@ -306,6 +326,7 @@
                             <th><i class="bi bi-cash"></i> Monto</th>
                             <th><i class="bi bi-shield-check"></i> Estado</th>
                             <th><i class="bi bi-pen"></i> Firma</th>
+                            <th><i class="bi bi-file-pdf"></i> PDF</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -336,7 +357,7 @@
                                 </span>
                             </td>
                             <td>
-                                <!-- FIRMA GAMER CON EFECTO ANIMADO -->
+                                <!-- FIRMA GAMER -->
                                 <span th:if="${credito.firmaDigital != null and credito.firmaDigital != ''}">
                                     <div class="firma-gamer">
                                         <img th:src="${credito.firmaDigital}" alt="Firma del cliente"/>
@@ -348,9 +369,17 @@
                                     <i class="bi bi-clock"></i> Sin firma
                                 </span>
                             </td>
+                            <td>
+                                <!-- ✅ BOTÓN PDF PARA CADA CRÉDITO -->
+                                <a th:href="@{/credito/pdf/{id}(id=${credito.id})}" 
+                                   class="btn-pdf-gamer"
+                                   target="_blank">
+                                    <i class="bi bi-file-pdf"></i> PDF
+                                </a>
+                            </td>
                         </tr>
                         <tr th:if="${creditos == null or creditos.isEmpty()}">
-                            <td colspan="4">
+                            <td colspan="5">
                                 <div class="empty-state">
                                     <i class="bi bi-inbox"></i>
                                     <p>No tienes solicitudes de crédito</p>
