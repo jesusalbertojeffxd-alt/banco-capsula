@@ -67,9 +67,9 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="text-white">
                 <i class="bi bi-credit-card-fill text-success me-2"></i>
-                Solicitudes de Crédito
+                Clientes con Créditos
             </h1>
-            <span class="badge bg-info text-dark fs-6" th:text="${solicitudes.size()} + ' solicitudes'">0 solicitudes</span>
+            <span class="badge bg-info text-dark fs-6" th:text="${clientesConCreditos.size()} + ' clientes'">0 clientes</span>
         </div>
 
         <div class="card bg-dark border-0 shadow-lg">
@@ -80,67 +80,33 @@
                             <tr>
                                 <th>#</th>
                                 <th><i class="bi bi-person"></i> Cliente</th>
-                                <th><i class="bi bi-calendar3"></i> Fecha</th>
-                                <th><i class="bi bi-cash"></i> Monto</th>
-                                <th><i class="bi bi-check-circle"></i> Estado</th>
-                                <th><i class="bi bi-pen"></i> Firma</th>
+                                <th><i class="bi bi-person-badge"></i> Usuario</th>
+                                <th><i class="bi bi-credit-card"></i> Total Créditos</th>
+                                <th><i class="bi bi-cash"></i> Monto Total</th>
+                                <th><i class="bi bi-file-pdf"></i> Reporte</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="solicitud : ${solicitudes}">
-                                <td th:text="${solicitud.id}">1</td>
-                                <td th:text="${solicitud.usuario.nombre}">Cliente</td>
-                                <td th:text="${#temporals.format(solicitud.fecha, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</td>
-                                <td class="text-success fw-bold" th:text="${'$' + #numbers.formatDecimal(solicitud.montoSolicitado, 1, 'COMMA', 2, 'POINT')}">$0.00</td>
+                            <tr th:each="cliente : ${clientesConCreditos}">
+                                <td th:text="${cliente.id}">1</td>
+                                <td th:text="${cliente.nombre}">Cliente</td>
+                                <td th:text="${cliente.username}">@username</td>
                                 <td>
-                                    <span class="badge" 
-                                          th:class="${solicitud.estado == 'AUTORIZADO' or solicitud.estado == 'APROBADO' ? 'badge bg-success' : 
-                                                     solicitud.estado == 'PENDIENTE' ? 'badge bg-warning text-dark' : 
-                                                     solicitud.estado == 'RECHAZADO' ? 'badge bg-danger' : 
-                                                     'badge bg-secondary'}"
-                                          th:text="${solicitud.estado}">PENDIENTE</span>
+                                    <span class="badge bg-success" th:text="${cliente.totalCreditos}">0</span>
                                 </td>
+                                <td class="text-success fw-bold" th:text="${'$' + #numbers.formatDecimal(cliente.montoTotal, 1, 'COMMA', 2, 'POINT')}">$0.00</td>
                                 <td>
-                                    <button class="btn btn-outline-info btn-sm" type="button" 
-                                            data-bs-toggle="modal" 
-                                            th:data-bs-target="'#firmaModal' + ${solicitud.id}">
-                                        <i class="bi bi-eye"></i> Ver
-                                    </button>
-                                    
-                                    <!-- Modal para firma -->
-                                    <div class="modal fade" th:id="'firmaModal' + ${solicitud.id}" tabindex="-1">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content" style="background: #1a1a1a; border: 1px solid #00ff88;">
-                                                <div class="modal-header border-bottom border-secondary">
-                                                    <h5 class="modal-title text-white">
-                                                        <i class="bi bi-pen text-success me-2"></i>
-                                                        Firma de Autorización
-                                                    </h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body text-center">
-                                                    <p class="text-muted small">Cliente: <span class="text-white" th:text="${solicitud.usuario.nombre}">Nombre</span></p>
-                                                    <p class="text-muted small">Monto: <span class="text-success fw-bold" th:text="${'$' + #numbers.formatDecimal(solicitud.montoSolicitado, 1, 'COMMA', 2, 'POINT')}">$0.00</span></p>
-                                                    <div style="background: white; border-radius: 8px; padding: 15px; display: inline-block; max-width: 100%;">
-                                                        <img th:src="${solicitud.firmaDigital}" style="max-width: 300px; max-height: 150px;"/>
-                                                    </div>
-                                                    <p class="text-muted small mt-2">
-                                                        <i class="bi bi-clock-history me-1"></i>
-                                                        Fecha: <span th:text="${#temporals.format(solicitud.fecha, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</span>
-                                                    </p>
-                                                </div>
-                                                <div class="modal-footer border-top border-secondary">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <a th:href="@{/admin/reporte/creditos/cliente/{id}(id=${cliente.id})}" 
+                                       class="btn btn-outline-success btn-sm" 
+                                       target="_blank">
+                                        <i class="bi bi-file-pdf"></i> Ver PDF
+                                    </a>
                                 </td>
                             </tr>
-                            <tr th:if="${solicitudes.isEmpty()}">
+                            <tr th:if="${clientesConCreditos.isEmpty()}">
                                 <td colspan="6" class="text-center py-4 text-muted">
                                     <i class="bi bi-inbox display-1 d-block mb-3"></i>
-                                    No hay solicitudes de crédito
+                                    No hay clientes con créditos solicitados
                                 </td>
                             </tr>
                         </tbody>
